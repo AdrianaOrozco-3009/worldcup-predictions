@@ -19,10 +19,10 @@ else:
 
 client = gspread.authorize(creds)
 
-SHEET_ID = "1yCf3io3Hywr5dnmu6a_kr2dktAvqoG7CU2CbAiEDbVY"  # Replace with your Google Sheet ID
+SHEET_ID = "1yCf3io3Hywr5dnmu6a_kr2dktAvqoG7CU2CbAiEDbVY"
 pred_sheet = client.open_by_key(SHEET_ID).worksheet("Predictions")
 leaderboard_sheet = client.open_by_key(SHEET_ID).worksheet("Leaderboard")
-results_sheet = client.open_by_key(SHEET_ID).worksheet("Results")  # actual match results
+results_sheet = client.open_by_key(SHEET_ID).worksheet("Results")
 
 # ------------------------
 # Flask app
@@ -30,7 +30,7 @@ results_sheet = client.open_by_key(SHEET_ID).worksheet("Results")  # actual matc
 app = Flask(__name__)
 
 # ------------------------
-# FIFA World Cup 2026 Group-Stage Matches
+# FIFA World Cup 2026 Matches (Group A-L)
 # ------------------------
 matches = [
     # Group A
@@ -66,133 +66,88 @@ matches = [
     {"match": "D6 Paraguay vs Australia", "team1": "Paraguay", "team2": "Australia"},
 
     # Group E
-    {"match": "E1 Spain vs Playoff H", "team1": "Spain", "team2": "Playoff H"},
-    {"match": "E2 Germany vs Japan", "team1": "Germany", "team2": "Japan"},
+    {"match": "E1 Spain vs Costa Rica", "team1": "Spain", "team2": "Costa Rica"},
+    {"match": "E2 Germany vs Playoff B", "team1": "Germany", "team2": "Playoff B"},
     {"match": "E3 Spain vs Germany", "team1": "Spain", "team2": "Germany"},
-    {"match": "E4 Playoff H vs Japan", "team1": "Playoff H", "team2": "Japan"},
-    {"match": "E5 Spain vs Japan", "team1": "Spain", "team2": "Japan"},
-    {"match": "E6 Playoff H vs Germany", "team1": "Playoff H", "team2": "Germany"},
+    {"match": "E4 Costa Rica vs Playoff B", "team1": "Costa Rica", "team2": "Playoff B"},
+    {"match": "E5 Spain vs Playoff B", "team1": "Spain", "team2": "Playoff B"},
+    {"match": "E6 Costa Rica vs Germany", "team1": "Costa Rica", "team2": "Germany"},
 
     # Group F
-    {"match": "F1 Argentina vs Poland", "team1": "Argentina", "team2": "Poland"},
-    {"match": "F2 France vs Playoff G", "team1": "France", "team2": "Playoff G"},
-    {"match": "F3 Argentina vs France", "team1": "Argentina", "team2": "France"},
-    {"match": "F4 Poland vs Playoff G", "team1": "Poland", "team2": "Playoff G"},
-    {"match": "F5 Argentina vs Playoff G", "team1": "Argentina", "team2": "Playoff G"},
-    {"match": "F6 Poland vs France", "team1": "Poland", "team2": "France"},
+    {"match": "F1 Belgium vs Tunisia", "team1": "Belgium", "team2": "Tunisia"},
+    {"match": "F2 USA vs Japan", "team1": "USA", "team2": "Japan"},
+    {"match": "F3 Belgium vs USA", "team1": "Belgium", "team2": "USA"},
+    {"match": "F4 Tunisia vs Japan", "team1": "Tunisia", "team2": "Japan"},
+    {"match": "F5 Belgium vs Japan", "team1": "Belgium", "team2": "Japan"},
+    {"match": "F6 Tunisia vs USA", "team1": "Tunisia", "team2": "USA"},
 
     # Group G
-    {"match": "G1 England vs Playoff K", "team1": "England", "team2": "Playoff K"},
-    {"match": "G2 Senegal vs Croatia", "team1": "Senegal", "team2": "Croatia"},
-    {"match": "G3 England vs Senegal", "team1": "England", "team2": "Senegal"},
-    {"match": "G4 Playoff K vs Croatia", "team1": "Playoff K", "team2": "Croatia"},
-    {"match": "G5 England vs Croatia", "team1": "England", "team2": "Croatia"},
-    {"match": "G6 Playoff K vs Senegal", "team1": "Playoff K", "team2": "Senegal"},
+    {"match": "G1 France vs Canada", "team1": "France", "team2": "Canada"},
+    {"match": "G2 Denmark vs Playoff E", "team1": "Denmark", "team2": "Playoff E"},
+    {"match": "G3 France vs Denmark", "team1": "France", "team2": "Denmark"},
+    {"match": "G4 Canada vs Playoff E", "team1": "Canada", "team2": "Playoff E"},
+    {"match": "G5 France vs Playoff E", "team1": "France", "team2": "Playoff E"},
+    {"match": "G6 Canada vs Denmark", "team1": "Canada", "team2": "Denmark"},
 
     # Group H
-    {"match": "H1 Portugal vs Playoff I", "team1": "Portugal", "team2": "Playoff I"},
-    {"match": "H2 Italy vs Uruguay", "team1": "Italy", "team2": "Uruguay"},
-    {"match": "H3 Portugal vs Italy", "team1": "Portugal", "team2": "Italy"},
-    {"match": "H4 Playoff I vs Uruguay", "team1": "Playoff I", "team2": "Uruguay"},
-    {"match": "H5 Portugal vs Uruguay", "team1": "Portugal", "team2": "Uruguay"},
-    {"match": "H6 Playoff I vs Italy", "team1": "Playoff I", "team2": "Italy"},
+    {"match": "H1 England vs Iran", "team1": "England", "team2": "Iran"},
+    {"match": "H2 Senegal vs Playoff F", "team1": "Senegal", "team2": "Playoff F"},
+    {"match": "H3 England vs Senegal", "team1": "England", "team2": "Senegal"},
+    {"match": "H4 Iran vs Playoff F", "team1": "Iran", "team2": "Playoff F"},
+    {"match": "H5 England vs Playoff F", "team1": "England", "team2": "Playoff F"},
+    {"match": "H6 Iran vs Senegal", "team1": "Iran", "team2": "Senegal"},
 
     # Group I
-    {"match": "I1 Belgium vs Playoff J", "team1": "Belgium", "team2": "Playoff J"},
-    {"match": "I2 Netherlands vs Ecuador", "team1": "Netherlands", "team2": "Ecuador"},
-    {"match": "I3 Belgium vs Netherlands", "team1": "Belgium", "team2": "Netherlands"},
-    {"match": "I4 Playoff J vs Ecuador", "team1": "Playoff J", "team2": "Ecuador"},
-    {"match": "I5 Belgium vs Ecuador", "team1": "Belgium", "team2": "Ecuador"},
-    {"match": "I6 Playoff J vs Netherlands", "team1": "Playoff J", "team2": "Netherlands"},
+    {"match": "I1 Argentina vs Poland", "team1": "Argentina", "team2": "Poland"},
+    {"match": "I2 Saudi Arabia vs Mexico", "team1": "Saudi Arabia", "team2": "Mexico"},
+    {"match": "I3 Argentina vs Saudi Arabia", "team1": "Argentina", "team2": "Saudi Arabia"},
+    {"match": "I4 Poland vs Mexico", "team1": "Poland", "team2": "Mexico"},
+    {"match": "I5 Argentina vs Mexico", "team1": "Argentina", "team2": "Mexico"},
+    {"match": "I6 Poland vs Saudi Arabia", "team1": "Poland", "team2": "Saudi Arabia"},
 
     # Group J
-    {"match": "J1 Morocco vs Playoff L", "team1": "Morocco", "team2": "Playoff L"},
-    {"match": "J2 USA vs Switzerland", "team1": "USA", "team2": "Switzerland"},
-    {"match": "J3 Morocco vs USA", "team1": "Morocco", "team2": "USA"},
-    {"match": "J4 Playoff L vs Switzerland", "team1": "Playoff L", "team2": "Switzerland"},
-    {"match": "J5 Morocco vs Switzerland", "team1": "Morocco", "team2": "Switzerland"},
-    {"match": "J6 Playoff L vs USA", "team1": "Playoff L", "team2": "USA"},
+    {"match": "J1 Portugal vs Morocco", "team1": "Portugal", "team2": "Morocco"},
+    {"match": "J2 Uruguay vs Playoff G", "team1": "Uruguay", "team2": "Playoff G"},
+    {"match": "J3 Portugal vs Uruguay", "team1": "Portugal", "team2": "Uruguay"},
+    {"match": "J4 Morocco vs Playoff G", "team1": "Morocco", "team2": "Playoff G"},
+    {"match": "J5 Portugal vs Playoff G", "team1": "Portugal", "team2": "Playoff G"},
+    {"match": "J6 Morocco vs Uruguay", "team1": "Morocco", "team2": "Uruguay"},
 
     # Group K
-    {"match": "K1 Cameroon vs South Korea", "team1": "Cameroon", "team2": "South Korea"},
-    {"match": "K2 Japan vs Croatia", "team1": "Japan", "team2": "Croatia"},
-    {"match": "K3 Cameroon vs Japan", "team1": "Cameroon", "team2": "Japan"},
-    {"match": "K4 South Korea vs Croatia", "team1": "South Korea", "team2": "Croatia"},
-    {"match": "K5 Cameroon vs Croatia", "team1": "Cameroon", "team2": "Croatia"},
-    {"match": "K6 South Korea vs Japan", "team1": "South Korea", "team2": "Japan"},
+    {"match": "K1 Italy vs Cameroon", "team1": "Italy", "team2": "Cameroon"},
+    {"match": "K2 Ecuador vs Playoff H", "team1": "Ecuador", "team2": "Playoff H"},
+    {"match": "K3 Italy vs Ecuador", "team1": "Italy", "team2": "Ecuador"},
+    {"match": "K4 Cameroon vs Playoff H", "team1": "Cameroon", "team2": "Playoff H"},
+    {"match": "K5 Italy vs Playoff H", "team1": "Italy", "team2": "Playoff H"},
+    {"match": "K6 Cameroon vs Ecuador", "team1": "Cameroon", "team2": "Ecuador"},
 
     # Group L
-    {"match": "L1 Ghana vs Playoff M", "team1": "Ghana", "team2": "Playoff M"},
-    {"match": "L2 Poland vs Mexico", "team1": "Poland", "team2": "Mexico"},
-    {"match": "L3 Ghana vs Poland", "team1": "Ghana", "team2": "Poland"},
-    {"match": "L4 Playoff M vs Mexico", "team1": "Playoff M", "team2": "Mexico"},
-    {"match": "L5 Ghana vs Mexico", "team1": "Ghana", "team2": "Mexico"},
-    {"match": "L6 Playoff M vs Poland", "team1": "Playoff M", "team2": "Poland"},
+    {"match": "L1 Netherlands vs Senegal", "team1": "Netherlands", "team2": "Senegal"},
+    {"match": "L2 Iran vs Playoff I", "team1": "Iran", "team2": "Playoff I"},
+    {"match": "L3 Netherlands vs Iran", "team1": "Netherlands", "team2": "Iran"},
+    {"match": "L4 Senegal vs Playoff I", "team1": "Senegal", "team2": "Playoff I"},
+    {"match": "L5 Netherlands vs Playoff I", "team1": "Netherlands", "team2": "Playoff I"},
+    {"match": "L6 Senegal vs Iran", "team1": "Senegal", "team2": "Iran"},
 ]
 
 # ------------------------
-# Load actual results
-# ------------------------
-def load_results():
-    actual_results_raw = results_sheet.get_all_records()
-    results = {}
-    for row in actual_results_raw:
-        match = row['Match']
-        score1 = int(row['Score1'])
-        score2 = int(row['Score2'])
-        results[match] = (score1, score2)
-    return results
-
-actual_results_cache = load_results()
-
-# Optional route to reload results manually
-@app.route("/reload_results")
-def reload_results():
-    global actual_results_cache
-    actual_results_cache = load_results()
-    return "Results reloaded successfully!"
-
-# ------------------------
-# Index route
+# Routes
 # ------------------------
 @app.route("/", methods=["GET", "POST"])
 def index():
-    print("🚀 Serving index page")
     if request.method == "POST":
         username = request.form["username"]
-        rows_to_append = []
-
-        # Collect all rows for this user
+        new_rows = []
         for m in matches:
-            try:
-                score1 = int(request.form.get(f"{m['match']}_score1") or 0)
-                score2 = int(request.form.get(f"{m['match']}_score2") or 0)
-            except ValueError:
-                score1 = 0
-                score2 = 0
-
-            rows_to_append.append([
-                str(datetime.now()), username, m["match"], m["team1"], m["team2"], score1, score2
-            ])
-
-        # Single write to Google Sheets
-        try:
-            pred_sheet.append_rows(rows_to_append)
-        except Exception as e:
-            print("Error writing to Google Sheet:", e)
-
-        # Reload results and calculate leaderboard
-        global actual_results_cache
-        actual_results_cache = load_results()
+            score1 = request.form.get(f"{m['match']}_score1")
+            score2 = request.form.get(f"{m['match']}_score2")
+            new_rows.append([str(datetime.now()), username, m["match"], m["team1"], m["team2"], score1, score2])
+        if new_rows:
+            pred_sheet.append_rows(new_rows)  # Batch write
         calculate_leaderboard()
-
         return redirect("/leaderboard")
-
     return render_template("index.html", matches=matches)
 
-# ------------------------
-# Leaderboard route
-# ------------------------
 @app.route("/leaderboard")
 def leaderboard():
     data = leaderboard_sheet.get_all_records()
@@ -204,14 +159,21 @@ def leaderboard():
 # ------------------------
 def calculate_leaderboard():
     predictions = pred_sheet.get_all_records()
-    scores = {}
+    
+    # Load actual results fresh every time
+    actual_results_raw = results_sheet.get_all_records()
+    actual_results = {}
+    for row in actual_results_raw:
+        match = row['Match']
+        actual_results[match] = (int(row['Score1']), int(row['Score2']))
 
+    scores = {}
     for pred in predictions:
         user = pred["Username"]
         match = pred["Match"]
         s1 = int(pred["Score1"])
         s2 = int(pred["Score2"])
-        actual = actual_results_cache.get(match)
+        actual = actual_results.get(match)
         if not actual:
             continue
         points, correct_score, correct_result = 0, 0, 0
@@ -229,8 +191,7 @@ def calculate_leaderboard():
 
     leaderboard_sheet.clear()
     leaderboard_sheet.append_row(["Username","Points","Correct Score","Correct Result"])
-    for user, data in scores.items():
-        leaderboard_sheet.append_row([user, data["Points"], data["Correct Score"], data["Correct Result"]])
+    leaderboard_sheet.append_rows([[u, d["Points"], d["Correct Score"], d["Correct Result"]] for u,d in scores.items()])
 
 # ------------------------
 # Run app
