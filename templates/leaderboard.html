@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FIFA World Cup 2026 Leaderboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; color: #222; margin: 40px; }
+        h1 { color: #d71920; text-align: center; } /* Canada red */
+        table { border-collapse: collapse; width: 60%; margin: 20px auto; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background-color: #0055a5; color: white; } /* USA blue */
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        a { display: inline-block; margin-top: 20px; text-decoration: none; color: #006847; } /* Mexico green */
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>FIFA World Cup 2026 Leaderboard</h1>
+    
+    {% if leaderboard %}
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Points</th>
+                <th>Correct Score</th>
+                <th>Correct Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in leaderboard %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ entry.get('Username', 'N/A') }}</td>
+                <td>{{ entry.get('Points', 0) }}</td>
+                <td>{{ entry.get('Correct Score', 0) }}</td>
+                <td>{{ entry.get('Correct Result', 0) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p style="text-align:center;">No predictions submitted yet.</p>
+    {% endif %}
+    
+    <p style="text-align:center;"><a href="/">Back to Prediction Form</a></p>
+</body>
+</html>
