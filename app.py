@@ -179,4 +179,41 @@ def leaderboard():
 # ------------------------
 # Leaderboard calculation (batch update)
 # ------------------------
-d
+def calculate_leaderboard():
+    predictions = pred_sheet.get_all_records()
+    scores = {}
+
+    for pred in predictions:
+        user = pred["Username"]
+        match = pred["Match"]
+        s1 = int(pred["Score1"])
+        s2 = int(pred["Score2"])
+        actual = actual_results_cache.get(match)
+        if not actual:
+            continue
+        points, correct_score, correct_result = 0, 0, 0
+        if (s1, s2) == actual:
+            points = 3
+            correct_score = 1
+        elif (s1 - s2)*(actual[0]-actual[1]) > 0 or (s1==s2 and actual[0]==actual[1]):
+            points = 1
+            correct_result = 1
+        if user not in scores:
+            scores[user] = {"Points":0,"Correct Score":0,"Correct Result":0}
+        scores[user]["Points"] += points
+        scores[user]["Correct Score"] += correct_score
+        scores[user]["Correct Result"] += correct_result
+
+    # Batch update leaderboard
+    rows = [["Username","Points","Correct Score","Correct Result"]]
+    for user, data in scores.items():
+        rows.append([user, data["Points"], data["Correct Score"], data["Correct Result"]])
+    leaderboard_sheet.clear()
+    leaderboard_sheet.update('A1', rows)
+
+# ------------------------
+# Run Flask
+# ------------------------
+if __name__ == "__main__":
+    app.run(debug=True)
+
